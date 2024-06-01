@@ -1,4 +1,4 @@
-# iTr4de Streamlit Chatbor App
+# iTr4de Streamlit Chatbot App
 ## LLM example from Streamlit
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/streamlit/llm-examples?quickstart=1)
