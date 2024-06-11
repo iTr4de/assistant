@@ -12,11 +12,20 @@ def load_dataset(file, missing_value_option):
         data = data.fillna(data.mean())
     elif missing_value_option == "Fill missing values with median":
         data = data.fillna(data.median())
-        
-    # Check if the DataFrame is empty
+    else:
+        # Add a default case to handle no selection
+        st.warning("Please select an option to handle missing values.")
+
+    # Check if the dataset is empty after handling missing values
     if data.empty:
-        st.warning("The dataset is empty after handling missing values.")
-        return data
+        st.error("The dataset is empty after handling missing values.")
+    else:
+        # Check for outliers only if the dataset is not empty
+        q1, q3 = np.percentile(data, [25, 75])
+        iqr = q3 - q1
+        lower_bound = q1 - (iqr * 1.5)
+        upper_bound = q3 + (iqr * 1.5)
+        data = data[(data >= lower_bound) & (data <= upper_bound)]
         
     # Handle missing values based on user selection
     if data.isnull().values.any():
