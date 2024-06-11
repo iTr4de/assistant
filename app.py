@@ -13,7 +13,7 @@ def load_dataset(file):
 
     # Check for missing values and outliers
     if data.isnull().values.any():
-        warn("The dataset contains missing values")
+        warnings.warn("The dataset contains missing values")
         data = data.dropna()
     q1, q3 = np.percentile(data, [25, 75])
     iqr = q3 - q1
