@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from sklearn.impute import SimpleImputer
 
 # Load the dataset into a Pandas DataFrame
 def load_dataset(file, missing_value_option):
@@ -27,8 +26,7 @@ def load_dataset(file, missing_value_option):
     # Check if the percentage of missing values is high (e.g., greater than 50%)
     if missing_percentages.max() > 50:
         st.warning("The dataset has a high percentage of missing values. Using mean imputation.")
-        imputer = SimpleImputer(strategy='mean')
-        data = pd.DataFrame(imputer.fit_transform(data), columns=data.columns)
+        data = data.fillna(data.mean())
     else:
         # Handle missing values based on user selection
         if missing_value_option == "Remove rows with missing values":
