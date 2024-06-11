@@ -10,6 +10,11 @@ def load_dataset(file):
         st.error(f"Error loading dataset: {e}")
         return None
 
+    # Check if the DataFrame is empty
+    if data.empty:
+        st.warning("The uploaded dataset is empty.")
+        return None
+
     # Check for missing values and outliers
     if data.isnull().values.any():
         st.warning("The dataset contains missing values")
