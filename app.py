@@ -2,19 +2,22 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# Load the dataset into a Pandas DataFrame
 def load_dataset(file, missing_value_option):
-    try:
-        data = pd.read_csv(file)
-    except Exception as e:
-        st.error(f"Error loading dataset: {e}")
-        return None
-
+    data = pd.read_csv(file)
+    
+    # Handle missing values based on user selection
+    if missing_value_option == "Remove rows with missing values":
+        data = data.dropna()
+    elif missing_value_option == "Fill missing values with mean":
+        data = data.fillna(data.mean())
+    elif missing_value_option == "Fill missing values with median":
+        data = data.fillna(data.median())
+        
     # Check if the DataFrame is empty
     if data.empty:
-        st.warning("The uploaded dataset is empty.")
-        return None
-
+        st.warning("The dataset is empty after handling missing values.")
+        return data
+        
     # Handle missing values based on user selection
     if data.isnull().values.any():
         if missing_value_option == "Remove rows with missing values":
@@ -31,7 +34,6 @@ def load_dataset(file, missing_value_option):
     iqr = q3 - q1
     lower_bound = q1 - (iqr * 1.5)
     upper_bound = q3 + (iqr * 1.5)
-    data = data[(data >= lower_bound) & (data <= upper_bound)]
 
     # Compute some basic statistics about the dataset
     num_rows = len(data)
