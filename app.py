@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 
 # Load the dataset into a Pandas DataFrame
-def load_dataset(filename):
+def load_dataset(file):
     try:
-        data = pd.read_csv(filename)
+        data = pd.read_csv(file)
     except Exception as e:
         print(f"Error loading dataset: {e}")
         return None
@@ -33,9 +33,9 @@ errors='coerce').notnull().all():
 
 # Show the dataset summary in a Streamlit app
 if __name__ == '__main__':
-    filename = st.text_input('Enter the CSV file path')
-    if filename:
-        dataset = load_dataset(filename)
+    file = st.file_uploader("Upload your CSV file")
+    if file is not None:
+        dataset = load_dataset(file)
         if dataset is not None:
             st.write("Dataset Summary:")
             st.write(f"Number of rows: {dataset['num_rows']}")
