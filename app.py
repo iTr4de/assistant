@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from scipy import stats
 
 # Load the dataset into a Pandas DataFrame
 def load_dataset(file):
@@ -9,12 +10,15 @@ def load_dataset(file):
         print(f"Error loading dataset: {e}")
         return None
 
-    # Check for missing values and invalid date formats
+    # Check for missing values and outliers
     if data.isnull().values.any():
         warn("The dataset contains missing values")
-    if not pd.to_datetime(data['date_column'], 
-errors='coerce').notnull().all():
-        warn("The dataset contains invalid date formats")
+        data = data.dropna()
+    q1, q3 = np.percentile(data, [25, 75])
+    iqr = q3 - q1
+    lower_bound = q1 - (iqr * 1.5)
+    upper_bound = q3 + (iqr * 1.5)
+    data = data[(data >= lower_bound) & (data <= upper_bound)]
 
     # Compute some basic statistics about the dataset
     num_rows = len(data)
