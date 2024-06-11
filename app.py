@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from scipy import stats
 
 # Load the dataset into a Pandas DataFrame
 def load_dataset(file):
