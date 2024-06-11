@@ -30,8 +30,9 @@ def load_dataset(file, missing_value_option):
         # Convert string columns to numeric if possible
         data = data.apply(pd.to_numeric, errors='coerce')
         
-        # Fill missing values with mean
-        data = data.fillna(data.mean())
+        # Fill missing values with mean, excluding empty or high missing value columns
+        columns_to_impute = data.columns[missing_percentages[data.columns] <= 50]
+        data[columns_to_impute] = data[columns_to_impute].fillna(data[columns_to_impute].mean())
     else:
         # Handle missing values based on user selection
         if missing_value_option == "Remove rows with missing values":
@@ -40,8 +41,9 @@ def load_dataset(file, missing_value_option):
             # Convert string columns to numeric if possible
             data = data.apply(pd.to_numeric, errors='coerce')
             
-            # Fill missing values with mean
-            data = data.fillna(data.mean())
+            # Fill missing values with mean, excluding empty or high missing value columns
+            columns_to_impute = data.columns[missing_percentages[data.columns] <= 50]
+            data[columns_to_impute] = data[columns_to_impute].fillna(data[columns_to_impute].mean())
         elif missing_value_option == "Fill missing values with median":
             data = data.fillna(data.median())
         else:
