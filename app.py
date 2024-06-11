@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 # Load the dataset into a Pandas DataFrame
-def load_dataset(file):
+def load_dataset(file, missing_value_option):
     try:
         data = pd.read_csv(file)
     except Exception as e:
@@ -15,10 +15,18 @@ def load_dataset(file):
         st.warning("The uploaded dataset is empty.")
         return None
 
-    # Check for missing values and outliers
+    # Handle missing values based on user selection
     if data.isnull().values.any():
-        st.warning("The dataset contains missing values")
-        data = data.dropna()
+        if missing_value_option == "Remove rows with missing values":
+            data = data.dropna()
+        elif missing_value_option == "Fill missing values with mean":
+            data = data.fillna(data.mean())
+        elif missing_value_option == "Fill missing values with median":
+            data = data.fillna(data.median())
+        else:
+            st.warning("The dataset contains missing values")
+
+    # Check for outliers
     q1, q3 = np.percentile(data, [25, 75])
     iqr = q3 - q1
     lower_bound = q1 - (iqr * 1.5)
@@ -45,8 +53,15 @@ def load_dataset(file):
 def main():
     st.title("Dataset Summary")
     file = st.file_uploader("Upload your CSV file", type=["csv"])
+    
     if file is not None:
-        dataset = load_dataset(file)
+        missing_value_option = st.selectbox(
+            "How do you want to handle missing values?",
+            ("Keep missing values", "Remove rows with missing values", "Fill missing values with mean", "Fill missing values with median")
+        )
+        
+        dataset = load_dataset(file, missing_value_option)
+        
         if dataset is not None:
             st.subheader("Dataset Preview")
             st.write(dataset['data'].head())
