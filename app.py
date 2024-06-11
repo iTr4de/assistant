@@ -26,12 +26,21 @@ def load_dataset(file, missing_value_option):
     # Check if the percentage of missing values is high (e.g., greater than 50%)
     if missing_percentages.max() > 50:
         st.warning("The dataset has a high percentage of missing values. Using mean imputation.")
+        
+        # Convert string columns to numeric if possible
+        data = data.apply(pd.to_numeric, errors='coerce')
+        
+        # Fill missing values with mean
         data = data.fillna(data.mean())
     else:
         # Handle missing values based on user selection
         if missing_value_option == "Remove rows with missing values":
             data = data.dropna()
         elif missing_value_option == "Fill missing values with mean":
+            # Convert string columns to numeric if possible
+            data = data.apply(pd.to_numeric, errors='coerce')
+            
+            # Fill missing values with mean
             data = data.fillna(data.mean())
         elif missing_value_option == "Fill missing values with median":
             data = data.fillna(data.median())
